@@ -10,8 +10,10 @@ RSS_FEEDS = {
     "MIT Technology Review AI": "https://www.technologyreview.com/feed/topic/artificial-intelligence/",
     "OpenAI Blog": "https://openai.com/blog/rss.xml",
     "Google AI Blog": "https://blog.google/technology/ai/rss",
-    "Anthropic Blog": "https://www.anthropic.com/rss",
-    "Hugging Face Blog": "https://huggingface.co/blog/rss.xml"
+    "NYT Technology": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+    "Hugging Face Blog": "https://huggingface.co/blog/rss.xml",
+    "Hacker News": "https://news.ycombinator.com/rss",
+    "Medium AI": "https://medium.com/feed/@topic/artificial-intelligence"
 }
 
 ARTICLES_PER_SOURCE = 4
