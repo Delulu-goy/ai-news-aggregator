@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI News Aggregator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <title>AI News Aggregator // TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f0f0f;
-            --bg-card: #1a1a1a;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
             --accent-cyan: #00d4ff;
-            --accent-purple: #7c3aed;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
+            --accent-magenta: #ff00ff;
+            --accent-cyan-dim: rgba(0, 212, 255, 0.15);
+            --accent-magenta-dim: rgba(255, 0, 255, 0.15);
+            --text-primary: #e0e0e0;
+            --text-secondary: #808090;
+            --glow-cyan: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3), 0 0 30px rgba(0, 212, 255, 0.1);
+            --glow-magenta: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.3);
         }
 
         * {
@@ -22,11 +27,30 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             background-color: var(--bg-dark);
             color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            opacity: 0.3;
         }
 
         .container {
@@ -36,16 +60,16 @@
         }
 
         header {
-            background: linear-gradient(180deg, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0.8) 100%);
-            border-bottom: 1px solid rgba(0,212,255,0.15);
-            padding: 24px 0;
+            background: linear-gradient(180deg, rgba(10,10,15,0.98) 0%, rgba(10,10,15,0.9) 100%);
+            border-bottom: 1px solid var(--accent-cyan-dim);
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
-        .header-content {
+        .terminal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,65 +77,204 @@
             gap: 16px;
         }
 
-        .logo-section {
+        .terminal-title {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .logo {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            border-radius: 12px;
+        .terminal-window {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-cyan-dim);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .terminal-bar {
+            background: linear-gradient(90deg, var(--accent-cyan-dim), var(--accent-magenta-dim));
+            padding: 6px 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: 700;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .terminal-btn.close { background: #ff5f56; }
+        .terminal-btn.minimize { background: #ffbd2e; }
+        .terminal-btn.maximize { background: #27ca40; }
+
+        .terminal-title-text {
+            font-size: 11px;
+            color: var(--accent-cyan);
+            opacity: 0.8;
+            flex: 1;
+            text-align: center;
+        }
+
+        .terminal-body {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ascii-logo {
+            font-size: 8px;
+            line-height: 1.1;
+            color: var(--accent-cyan);
+            white-space: pre;
+            text-shadow: var(--glow-cyan);
+            animation: flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 97%, 100% { opacity: 1; }
+            98% { opacity: 0.8; }
+            99% { opacity: 0.9; }
+        }
+
+        .title-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .glitch-title {
             font-size: 20px;
-            box-shadow: 0 0 20px rgba(0,212,255,0.3);
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: var(--glow-cyan);
+            position: relative;
+            display: inline-block;
         }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .glitch-title::before,
+        .glitch-title::after {
+            content: 'AI NEWS TERMINAL';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-title::before {
+            color: var(--accent-magenta);
+            animation: glitch-1 3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+
+        .glitch-title::after {
+            color: var(--accent-cyan);
+            animation: glitch-2 2s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitch-1 {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-2px, 1px); }
+            94% { transform: translate(2px, -1px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 90%, 100% { transform: translate(0); }
+            91% { transform: translate(1px, 2px); }
+            93% { transform: translate(-1px, -2px); }
+        }
+
+        .status-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #27ca40;
+            box-shadow: 0 0 8px #27ca40;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px #27ca40; }
+            50% { opacity: 0.6; box-shadow: 0 0 4px #27ca40; }
+        }
+
+        .typing-text {
+            overflow: hidden;
+            border-right: 2px solid var(--accent-cyan);
+            white-space: nowrap;
+            animation: typing 3s steps(30) infinite, blink 0.7s step-end infinite;
+            color: var(--accent-cyan);
+            font-size: 12px;
+        }
+
+        @keyframes typing {
+            0%, 100% { width: 0; }
+            70%, 90% { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
         }
 
         .meta-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .last-updated {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-secondary);
-            background: rgba(255,255,255,0.05);
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 212, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--accent-cyan-dim);
         }
 
         .refresh-btn {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,212,255,0.4);
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            box-shadow: var(--glow-cyan);
         }
 
         .loading-overlay {
@@ -121,42 +284,70 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(15,15,15,0.9);
+            background: rgba(10,10,15,0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 16px;
+            gap: 24px;
         }
 
         .loading-overlay.active {
             display: flex;
         }
 
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid rgba(0,212,255,0.2);
-            border-top-color: var(--accent-cyan);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .loading-terminal {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-cyan-dim);
+            border-radius: 8px;
+            padding: 24px 32px;
+            max-width: 400px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .loading-text {
+            color: var(--accent-cyan);
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .loading-bar-container {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-cyan-dim);
+            border-radius: 4px;
+            height: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .loading-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: var(--accent-cyan);
+            animation: blink 0.7s step-end infinite;
+            margin-left: 4px;
+            vertical-align: middle;
         }
 
         .news-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            padding: 32px 0;
+            gap: 16px;
+            padding: 24px 0;
         }
 
         .source-card {
             background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 8px;
+            padding: 12px;
             border: 1px solid rgba(255,255,255,0.05);
             transition: all 0.3s ease;
             position: relative;
@@ -169,51 +360,78 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            bottom: 0;
+            background: linear-gradient(135deg, var(--accent-cyan-dim), var(--accent-magenta-dim));
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .source-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .source-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.1);
-            border-color: rgba(0,212,255,0.2);
+            background: var(--bg-card-hover);
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan), 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .source-card:hover::after {
+            transform: scaleX(1);
         }
 
         .source-card:hover::before {
-            opacity: 1;
+            opacity: 0.05;
         }
 
         .source-title {
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .source-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2));
-            border-radius: 8px;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-cyan-dim), var(--accent-magenta-dim));
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 10px;
+            border: 1px solid var(--accent-cyan-dim);
         }
 
         .article-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .article-item {
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: border-color 0.3s ease;
+        }
+
+        .article-item:hover {
+            border-color: var(--accent-cyan-dim);
         }
 
         .article-item:last-child {
@@ -224,45 +442,55 @@
         .article-link {
             color: var(--text-primary);
             text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 400;
             display: block;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
             line-height: 1.4;
         }
 
         .article-link:hover {
             color: var(--accent-cyan);
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+            padding-left: 8px;
         }
 
         .article-date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-size: 9px;
             color: var(--text-secondary);
-            margin-top: 6px;
+            margin-top: 4px;
+            opacity: 0.7;
         }
 
         .error-message {
-            background: rgba(255,59,48,0.1);
-            border: 1px solid rgba(255,59,48,0.3);
-            color: #ff6b6b;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
+            background: rgba(255, 0, 80, 0.1);
+            border: 1px solid rgba(255, 0, 80, 0.3);
+            color: #ff5070;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .empty-message {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 11px;
             font-style: italic;
+            opacity: 0.6;
         }
 
         footer {
             text-align: center;
-            padding: 32px 0;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 24px 0;
+            border-top: 1px solid var(--accent-cyan-dim);
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 11px;
+        }
+
+        footer span {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 4px rgba(0, 212, 255, 0.5);
         }
 
         @media (max-width: 1024px) {
@@ -276,38 +504,70 @@
                 grid-template-columns: 1fr;
             }
 
-            .header-content {
+            .terminal-body {
                 flex-direction: column;
-                text-align: center;
+                align-items: flex-start;
             }
 
-            h1 {
-                font-size: 22px;
+            .ascii-logo {
+                display: none;
             }
 
-            .meta-info {
-                width: 100%;
-                justify-content: center;
+            .terminal-title-text {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
+    <div class="scanlines"></div>
+
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <span>Fetching latest AI news...</span>
+        <div class="loading-terminal">
+            <div class="loading-text">> INITIALIZING NEURAL CONNECTION<span class="loading-cursor"></span></div>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+        </div>
     </div>
 
     <header>
         <div class="container">
-            <div class="header-content">
-                <div class="logo-section">
-                    <div class="logo">AI</div>
-                    <h1>AI News Aggregator</h1>
+            <div class="terminal-header">
+                <div class="terminal-title">
+                    <div class="terminal-window">
+                        <div class="terminal-bar">
+                            <div class="terminal-buttons">
+                                <div class="terminal-btn close"></div>
+                                <div class="terminal-btn minimize"></div>
+                                <div class="terminal-btn maximize"></div>
+                            </div>
+                            <div class="terminal-title-text">ai_news_aggregator.exe</div>
+                        </div>
+                        <div class="terminal-body">
+                            <pre class="ascii-logo">
+ ╔══════════════╗
+ ║  ▄▄▄▄▄▄▄▄▄▄▄  ║
+ ║ █▓▒░AI░NEWS▒▓█
+ ║  ▀▀▀▀▀▀▀▀▀▀▀  ║
+ ╚══════════════╝
+                            </pre>
+                            <div class="title-section">
+                                <h1 class="glitch-title">AI NEWS TERMINAL</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-section">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>CONNECTED</span>
+                    </div>
+                    <div class="typing-text">Fetching neural feed...</div>
                 </div>
                 <div class="meta-info">
-                    <div class="last-updated">Last updated: {{ last_updated }}</div>
-                    <button class="refresh-btn" onclick="refreshFeed()">Refresh</button>
+                    <div class="last-updated">LAST SYNC: {{ last_updated }}</div>
+                    <button class="refresh-btn" onclick="refreshFeed()">↻ REFRESH</button>
                 </div>
             </div>
         </div>
@@ -325,18 +585,18 @@
                 </div>
                 <div class="article-list">
                     {% if source.error %}
-                    <div class="error-message">Failed to load: {{ source.error }}</div>
+                    <div class="error-message">⚠ ERROR: {{ source.error }}</div>
                     {% elif source.articles %}
                         {% for article in source.articles %}
                         <div class="article-item">
                             <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer" class="article-link">
-                                {{ article.title }}
+                                ▸ {{ article.title }}
                             </a>
                             <div class="article-date">{{ article.date }}</div>
                         </div>
                         {% endfor %}
                     {% else %}
-                    <div class="empty-message">No articles available</div>
+                    <div class="empty-message">> No data streams available</div>
                     {% endif %}
                 </div>
             </div>
@@ -346,14 +606,36 @@
 
     <footer>
         <div class="container">
-            AI News Aggregator &copy; 2026 | Powered by RSS Feeds
+            <span>◆</span> AI NEWS AGGREGATOR <span>◆</span> v2.0.26 <span>◆</span> SYSTEM ONLINE
         </div>
     </footer>
 
     <script>
+        let progress = 0;
+        const loadingBar = document.getElementById('loadingBar');
+
+        function animateLoading() {
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loadingOverlay').classList.remove('active');
+                    }, 300);
+                }
+                loadingBar.style.width = progress + '%';
+            }, 150);
+        }
+
         function refreshFeed() {
             document.getElementById('loadingOverlay').classList.add('active');
-            location.reload();
+            progress = 0;
+            loadingBar.style.width = '0%';
+            animateLoading();
+            setTimeout(() => {
+                location.reload();
+            }, 800);
         }
 
         setInterval(() => {
@@ -361,9 +643,7 @@
         }, 5 * 60 * 1000);
 
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('loadingOverlay').classList.remove('active');
-            }, 500);
+            animateLoading();
         });
     </script>
 </body>
