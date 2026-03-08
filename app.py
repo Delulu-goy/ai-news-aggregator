@@ -7,13 +7,14 @@ app = Flask(__name__)
 RSS_FEEDS = {
     "TechCrunch AI": "https://techcrunch.com/category/artificial-intelligence/feed/",
     "VentureBeat AI": "https://venturebeat.com/category/ai/feed/",
-    "MIT Technology Review AI": "https://www.technologyreview.com/feed/topic/artificial-intelligence/",
     "OpenAI Blog": "https://openai.com/blog/rss.xml",
     "Google AI Blog": "https://blog.google/technology/ai/rss",
     "NYT Technology": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
     "Hugging Face Blog": "https://huggingface.co/blog/rss.xml",
     "Hacker News": "https://news.ycombinator.com/rss",
-    "Medium AI": "https://medium.com/feed/@topic/artificial-intelligence"
+    "Medium AI": "https://medium.com/feed/topic/artificial-intelligence",
+    "Machine Learning Mastery": "https://machinelearningmastery.com/blog/feed/",
+    "Analytics Vidhya": "https://www.analyticsvidhya.com/blog/feed/"
 }
 
 ARTICLES_PER_SOURCE = 4
